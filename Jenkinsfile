@@ -1,7 +1,12 @@
 pipeline {
 
-  agent any
-
+  agent {
+  kubernetes {
+    cloud 'kubernetes'
+    inheritFrom 'jenkins-slave'
+    namespace 'jenkins'
+  }
+}
   stages {
 
     stage('Checkout Source') {
