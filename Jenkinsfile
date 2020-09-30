@@ -1,7 +1,7 @@
 pipeline {
   agent {
     kubernetes {
-      label 'spring-petclinic-demo'
+      label 'buildit'
       defaultContainer 'jnlp'
       yaml """
 
@@ -88,9 +88,11 @@ spec:
 
     stage("Build image") {
         steps {
-            script {
-                  myapp = docker.build("yorgdockers/buildit:${env.BUILD_ID}")
-                }
+          container('docker') {
+            sh """
+               docker build -t yorgdockers/buildit:$BUILD_NUMBER .
+            """
+        }
             }
         }
 
