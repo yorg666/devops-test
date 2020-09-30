@@ -1,30 +1,18 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
   creationTimestamp: null
   labels:
     app: jenkins
   name: jenkins
 spec:
-  replicas: 1
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    nodePort: 30081
   selector:
-    matchLabels:
-      app: jenkins
-  strategy: {}
-  template:
-    metadata:
-      labels:
-        app: jenkins
-    spec:
-      containers:
-      - image: jenkins/jenkins:lts
-        name: jenkins
-        ports:
-        - containerPort: 8080
-        volumeMounts:
-        - mountPath: /var/jenkins_home
-          name: jenkins-home
-      volumes:
-      - name: jenkins-home
-        emptyDir: {}   
- 
+    app: jenkins
+  type: NodePort
+status:
+  loadBalancer: {}
