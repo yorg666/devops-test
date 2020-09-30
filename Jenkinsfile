@@ -1,48 +1,71 @@
 pipeline {
-
   agent {
-  kubernetes {
-    cloud 'kubernetes'
-    inheritFrom 'jenkins-slave'
-    namespace 'jenkins'
-  }
+    kubernetes {
+      label 'spring-petclinic-demo'
+      defaultContainer 'jnlp'
+      yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+  component: ci
+spec:
+  # Use service account that can deploy to all namespaces
+ # serviceAccountName: cd-jenkins
+  containers:
+  - name: maven
+    image: maven:latest
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+      - mountPath: "/root/.m2"
+        name: m2
+  - name: docker
+    image: docker:latest
+    command:
+    - cat
+    tty: true
+    volumeMounts:
+    - mountPath: /var/run/docker.sock
+      name: docker-sock
+  volumes:
+    - name: docker-sock
+      hostPath:
+        path: /var/run/docker.sock
+    - name: m2
+      persistentVolumeClaim:
+        claimName: m2
+"""
 }
+   }
   stages {
-
-    stage('Checkout Source') {
+    stage('Build') {
       steps {
-        git url:'https://github.com/yorg666/devops-test.git', branch:'master'
-      }
-    }
-    
-      stage("Build image") {
-            steps {
-                script {
-                    myapp = docker.build("yorgdockers/buildit:${env.BUILD_ID}")
-                }
-            }
-        }
-    
-      stage("Push image") {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
-                            myapp.push("latest")
-                            myapp.push("${env.BUILD_ID}")
-                    }
-                }
-            }
-        }
-
-    
-    stage('Deploy App') {
-      steps {
-        script {
-          kubernetesDeploy(configs: "k8s/jenkins_deployment.yml", kubeconfigId: "buildit")
+        container('maven') {
+          sh """
+                        mvn package -DskipTests
+                                                """
         }
       }
     }
-
+    stage('Test') {
+      steps {
+        container('maven') {
+          sh """
+             mvn test
+          """
+        }
+      }
+    }
+    stage('Push') {
+      steps {
+        container('docker') {
+          sh """
+             docker build -t spring-petclinic-demo:$BUILD_NUMBER .
+          """
+        }
+      }
+    }
   }
-
 }
