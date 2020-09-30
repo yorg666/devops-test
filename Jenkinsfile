@@ -33,9 +33,9 @@ spec:
     - name: docker-sock
       hostPath:
         path: /var/run/docker.sock
-    - name: m2
+    - name: buildit-jenkins
       persistentVolumeClaim:
-        claimName: m2
+        claimName: buildit-jenkins
 """
 }
    }
