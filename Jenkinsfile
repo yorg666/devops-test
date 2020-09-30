@@ -79,13 +79,14 @@ spec:
 }
    }
   stages {
-
     stage('Checkout Source') {
+          steps {
           container('docker') {
             sh """
                docker build -t yorgdockers/buildit:$BUILD_NUMBER .
             """
         }
+          }
     }
 
     stage("Build image") {
