@@ -1,4 +1,7 @@
 pipeline {
+    environment { 
+        registryCredential = 'dockerhub'  
+    }
   agent {
     kubernetes {
       // this label will be the prefix of the generated pod's name
@@ -35,19 +38,24 @@ spec:
   stages {
     stage('Build image') {
       steps {
+        withDockerRegistry([ credentialsId: "dockerhub", url: "" ]){
         container('docker') {
+          sh "docker login"  
           sh "docker build -t yorgdockers/buildit:latest ."
           sh "docker push yorgdockers/buildit:latest"
         }
       }
-    }
-    stage('Deploy') {
-      steps {
-        container('kubectl') {
-          sh "kubectl version"
-        }
       }
     }
 
+    stage('Deploy') {
+      steps {
+        withCredentials([kubeconfigContent(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_CONTENT')]){
+        container('kubectl') {
+          sh ''' mkdir ~/.kube && echo "$KUBECONFIG_CONTENT" > ~/.kube/config && kubectl get pods '''
+        }
+      }
+    }
+    }
   }
 }
