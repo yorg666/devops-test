@@ -40,7 +40,6 @@ spec:
       steps {
         withDockerRegistry([ credentialsId: "dockerhub", url: "" ]){
         container('docker') {
-          sh "docker login"  
           sh "docker build -t yorgdockers/buildit:latest ."
           sh "docker push yorgdockers/buildit:latest"
         }
