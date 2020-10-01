@@ -1,6 +1,8 @@
 pipeline {
     environment { 
-        registryCredential = 'dockerhub'  
+	registry = "YourDockerhubAccount/YourRepository"
+	registryCredential = 'dockerhub'
+	dockerImage = ''
     }
   agent {
     kubernetes {
@@ -38,14 +40,22 @@ spec:
   stages {
     stage('Build image') {
       steps {
-        withDockerRegistry([ credentialsId: "dockerhub", url: "https://registry-1.docker.io/v2/" ]){
         container('docker') {
           sh "docker build -t yorgdockers/buildit:latest ."
-          sh "docker push yorgdockers/buildit:latest"
         }
       }
       }
-    }
+
+    stage('Push image') {
+      steps {
+        container('docker') {
+	script {
+		docker.withRegistry( '', registryCredential ) {
+		dockerImage.push()
+		}
+        }
+      }
+      }
 
     stage('Deploy') {
       steps {
