@@ -38,7 +38,7 @@ spec:
   stages {
     stage('Build image') {
       steps {
-        withDockerRegistry([ credentialsId: "dockerhub", url: "" ]){
+        withDockerRegistry([ credentialsId: "dockerhub", url: "https://registry-1.docker.io/v2/" ]){
         container('docker') {
           sh "docker build -t yorgdockers/buildit:latest ."
           sh "docker push yorgdockers/buildit:latest"
