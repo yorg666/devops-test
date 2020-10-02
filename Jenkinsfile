@@ -41,7 +41,9 @@ spec:
     stage('Build image') {
       steps {
         container('docker') {
-          sh "docker build -t yorgdockers/buildit:latest ."
+	script {
+		dockerImage = docker.build registry + ":$BUILD_NUMBER"
+		}
         }
       }
       }
