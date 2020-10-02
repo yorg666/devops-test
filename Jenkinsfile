@@ -41,33 +41,42 @@ spec:
     stage('Build image') {
       steps {
         container('docker') {
-	script {
-		dockerImage = docker.build registry + ":$BUILD_NUMBER"
-		}
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+          }
         }
       }
-      }
+    }
 
     stage('Push image') {
       steps {
         container('docker') {
-	script {
-		docker.withRegistry( '', registryCredential ) {
-		dockerImage.push()
-		}
+          script {
+            docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+		        }
+          }
         }
-      }
       }
      }
 
+    stage('Config kubeconfig') {
+      steps {
+        withCredentials([kubeconfigContent(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_CONTENT')]){
+        container('kubectl') {
+          sh ''' mkdir ~/.kube && echo "$KUBECONFIG_CONTENT" > ~/.kube/config '''
+        }
+      }
+     } 
+    }
     stage('Deploy') {
       steps {
         withCredentials([kubeconfigContent(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_CONTENT')]){
         container('kubectl') {
-          sh ''' mkdir ~/.kube && echo "$KUBECONFIG_CONTENT" > ~/.kube/config && kubectl get pods && ls -la '''
+          sh '''kubectl set image deployment/buildit-deployment buildit=yorgdockers/buildit:$BUILD_NUMBER '''
         }
       }
-    }
+     } 
     }
   }
 }
