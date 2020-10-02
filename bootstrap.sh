@@ -1,6 +1,7 @@
 #!/bin/bash
 
 sudo apt update
+git clone https://github.com/yorg666/devops-test.git
 
 sudo snap install kubectl --classic
 
@@ -11,7 +12,7 @@ sudo snap install docker
 sudo snap install microk8s --classic
 
 sudo microk8s.config > ~/.kube/config
-chmod 600 /home/cloud_user/.kube/config
+chmod 600 /home/ubuntu/.kube/config
 
 sudo microk8s enable storage
 sudo microk8s enable dns
@@ -23,7 +24,6 @@ cd linux-amd64
 sudo mv helm /usr/local/bin
 helm repo add jenkins https://charts.jenkins.io
 
-git clone https://github.com/yorg666/devops-test.git
 cd devops-test
-
 helm install -f ./k8s/helm/jenkins/values.yaml  buildit-jenkins jenkins/jenkins
+
