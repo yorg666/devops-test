@@ -3,7 +3,7 @@ resource "aws_elb" "krystian-buildit" {
   availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 
   listener {
-    instance_port     = 32059
+    instance_port     = 31846
     instance_protocol = "http"
     lb_port           = 80
     lb_protocol       = "http"
@@ -14,7 +14,7 @@ resource "aws_elb" "krystian-buildit" {
     healthy_threshold   = 2
     unhealthy_threshold = 2
     timeout             = 3
-    target              = "HTTP:32059/"
+    target              = "HTTP:31846/"
     interval            = 30
   }
 
