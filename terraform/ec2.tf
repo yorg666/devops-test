@@ -8,18 +8,12 @@ resource "aws_instance" "microk8s" {
   instance_type = "t2.xlarge"
   key_name = aws_key_pair.jenkins-ec2.key_name
 
-//  provisioner "file" {
-//    source      = "./bootstrap.sh"
-//    destination = "/home/ubuntu/bootstrap.sh"
-//  }
 
   ebs_block_device {
     device_name = "/dev/sda1"
     volume_size = "24"
     volume_type = "gp2"
   }
-
-  user_data = file("bootstrap.sh")
 
   tags = {
     Name = "Krystian Jenkins on microk8s"
