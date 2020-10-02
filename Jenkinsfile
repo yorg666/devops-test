@@ -64,7 +64,7 @@ spec:
       steps {
         withCredentials([kubeconfigContent(credentialsId: 'kubeconfig', variable: 'KUBECONFIG_CONTENT')]){
         container('kubectl') {
-          sh ''' mkdir ~/.kube && echo "$KUBECONFIG_CONTENT" > ~/.kube/config && kubectl get pods '''
+          sh ''' mkdir ~/.kube && echo "$KUBECONFIG_CONTENT" > ~/.kube/config && kubectl get pods && ls -la '''
         }
       }
     }
