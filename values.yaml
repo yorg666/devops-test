@@ -236,6 +236,9 @@ master:
   # List of plugins to install in addition to those listed in master.installPlugins
   additionalPlugins:
     - docker-workflow:1.24
+    - docker-plugin:1.2.1
+    - kubernetes-cd:2.3.0
+    - github:1.31.0
 
   # Enable to initialize the Jenkins master only once on initial installation.
   # Without this, whenever the master gets restarted (Evicted, etc.) it will fetch plugin updates which has the potential to cause breakage.
