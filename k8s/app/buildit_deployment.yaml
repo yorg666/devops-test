@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: buildit-deployment
+  name: buildit-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: buildit-deployment
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: buildit-deployment
+    spec:
+      containers:
+      - image: yorgdockers/buildit:42
+        name: buildit
+        resources: {}
+status: {}
