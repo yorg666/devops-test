@@ -1,6 +1,6 @@
 pipeline {
     environment { 
-	registry = "YourDockerhubAccount/YourRepository"
+	registry = "yorgdockers/buildit"
 	registryCredential = 'dockerhub'
 	dockerImage = ''
     }
