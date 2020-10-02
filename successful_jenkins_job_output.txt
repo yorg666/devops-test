@@ -1,0 +1,281 @@
+Started by GitHub push by yorg666
+Obtained Jenkinsfile from git https://github.com/yorg666/devops-test.git
+Running in Durability level: MAX_SURVIVABILITY
+[Pipeline] Start of Pipeline
+[Pipeline] podTemplate
+[Pipeline] {
+[Pipeline] node
+Created Pod: default/jenkins-agent-my-app-lv3cw-q0j91
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Scheduled] Successfully assigned default/jenkins-agent-my-app-lv3cw-q0j91 to ip-172-31-9-99
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Pulled] Container image "lachlanevenson/k8s-kubectl:v1.19.2" already present on machine
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Created] Created container kubectl
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Started] Started container kubectl
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Pulling] Pulling image "docker"
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Pulled] Successfully pulled image "docker" in 701.669576ms
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Created] Created container docker
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Started] Started container docker
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Pulled] Container image "jenkins/jnlp-slave:4.0.1-1" already present on machine
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Created] Created container jnlp
+[Normal][default/jenkins-agent-my-app-lv3cw-q0j91][Started] Started container jnlp
+Still waiting to schedule task
+‘jenkins-agent-my-app-lv3cw-q0j91’ is offline
+Agent jenkins-agent-my-app-lv3cw-q0j91 is provisioned from template jenkins-agent-my-app-lv3cw
+---
+apiVersion: "v1"
+kind: "Pod"
+metadata:
+  annotations:
+    buildUrl: "http://buildit-jenkins:8080/job/buildit/2/"
+    runUrl: "job/buildit/2/"
+  labels:
+    component: "ci"
+    jenkins/buildit-jenkins-jenkins-slave: "true"
+    jenkins/label: "jenkins-agent-my-app"
+  name: "jenkins-agent-my-app-lv3cw-q0j91"
+spec:
+  containers:
+  - command:
+    - "cat"
+    image: "lachlanevenson/k8s-kubectl:v1.19.2"
+    name: "kubectl"
+    tty: true
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  - command:
+    - "cat"
+    image: "docker"
+    name: "docker"
+    tty: true
+    volumeMounts:
+    - mountPath: "/var/run/docker.sock"
+      name: "docker-sock"
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  - env:
+    - name: "JENKINS_SECRET"
+      value: "********"
+    - name: "JENKINS_TUNNEL"
+      value: "buildit-jenkins-agent:50000"
+    - name: "JENKINS_AGENT_NAME"
+      value: "jenkins-agent-my-app-lv3cw-q0j91"
+    - name: "JENKINS_NAME"
+      value: "jenkins-agent-my-app-lv3cw-q0j91"
+    - name: "JENKINS_AGENT_WORKDIR"
+      value: "/home/jenkins/agent"
+    - name: "JENKINS_URL"
+      value: "http://buildit-jenkins:8080/"
+    image: "jenkins/jnlp-slave:4.0.1-1"
+    name: "jnlp"
+    resources:
+      requests:
+        cpu: "100m"
+        memory: "256Mi"
+    volumeMounts:
+    - mountPath: "/home/jenkins/agent"
+      name: "workspace-volume"
+      readOnly: false
+  nodeSelector:
+    beta.kubernetes.io/os: "linux"
+  restartPolicy: "Never"
+  securityContext: {}
+  volumes:
+  - hostPath:
+      path: "/var/run/docker.sock"
+    name: "docker-sock"
+  - emptyDir:
+      medium: ""
+    name: "workspace-volume"
+
+Running on jenkins-agent-my-app-lv3cw-q0j91 in /home/jenkins/agent/workspace/buildit
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+No credentials specified
+Cloning the remote Git repository
+Cloning repository https://github.com/yorg666/devops-test.git
+ > git init /home/jenkins/agent/workspace/buildit # timeout=10
+Fetching upstream changes from https://github.com/yorg666/devops-test.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.11.0'
+ > git fetch --tags --progress -- https://github.com/yorg666/devops-test.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+Checking out Revision 12b7d12d672d9e0b0d8bb27b086f40ffec51f28b (refs/remotes/origin/master)
+ > git config remote.origin.url https://github.com/yorg666/devops-test.git # timeout=10
+ > git config --add remote.origin.fetch +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git config remote.origin.url https://github.com/yorg666/devops-test.git # timeout=10
+Fetching upstream changes from https://github.com/yorg666/devops-test.git
+ > git fetch --tags --progress -- https://github.com/yorg666/devops-test.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/master^{commit} # timeout=10
+ > git rev-parse refs/remotes/origin/origin/master^{commit} # timeout=10
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f 12b7d12d672d9e0b0d8bb27b086f40ffec51f28b # timeout=10
+Commit message: "Final cleaning"
+ > git rev-list --no-walk a166a9459c5e10c4ba4dd4660b4a9421b69ab4ce # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Build image)
+[Pipeline] container
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] sh
++ docker build -t yorgdockers/buildit:2 .
+Sending build context to Docker daemon  137.7kB
+
+Step 1/7 : FROM  mhart/alpine-node:12
+ ---> 9d88359808c3
+Step 2/7 : WORKDIR /usr/src/app
+ ---> Using cache
+ ---> d3378874dfc0
+Step 3/7 : COPY . .
+ ---> 2b309a1546a7
+Step 4/7 : RUN npm install
+ ---> Running in 46b0730a2a8f
+1mnpm notice created a lockfile as package-lock.json. You should commit this file.
+1mnpm WARN example-repo@1.0.0 No repository field.
+1m
+added 52 packages from 19 contributors and audited 52 packages in 2.239s
+
+20 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+Removing intermediate container 46b0730a2a8f
+ ---> 847dab1cb2ea
+Step 5/7 : COPY . .
+ ---> efb53bbf2d1b
+Step 6/7 : EXPOSE 3000
+ ---> Running in 0ee00c8f896b
+Removing intermediate container 0ee00c8f896b
+ ---> 0db89b4262ca
+Step 7/7 : CMD ["npm", "start"]
+ ---> Running in 7264b078e891
+Removing intermediate container 7264b078e891
+ ---> 392cd4ff4ecc
+Successfully built 392cd4ff4ecc
+Successfully tagged yorgdockers/buildit:2
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Push image)
+[Pipeline] container
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withDockerRegistry
+Executing sh script inside container docker of pod jenkins-agent-my-app-lv3cw-q0j91
+Executing command: "docker" "login" "-u" "yorgdockers" "-p" ******** "https://index.docker.io/v1/" 
+exit
+WARNING! Using --password via the CLI is insecure. Use --password-stdin.
+WARNING! Your password will be stored unencrypted in /home/jenkins/agent/workspace/buildit@tmp/2654a0a3-4e0a-4ad0-bf91-240f7b39283d/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] sh
++ docker tag yorgdockers/buildit:2 yorgdockers/buildit:2
+[Pipeline] isUnix
+[Pipeline] sh
++ docker push yorgdockers/buildit:2
+The push refers to repository [docker.io/yorgdockers/buildit]
+060d766485c2: Preparing
+cbf00272c0d6: Preparing
+f9e0533a41d3: Preparing
+c70e9f3733a7: Preparing
+394bee12860e: Preparing
+89ae5c4ee501: Preparing
+89ae5c4ee501: Waiting
+394bee12860e: Layer already exists
+c70e9f3733a7: Layer already exists
+89ae5c4ee501: Layer already exists
+f9e0533a41d3: Pushed
+060d766485c2: Pushed
+cbf00272c0d6: Pushed
+2: digest: sha256:79cd2790157f841fe45443f7600c29e94056a094064afdb306a1144c3ffe1c7e size: 1576
+[Pipeline] }
+[Pipeline] // withDockerRegistry
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Config kubeconfig)
+[Pipeline] withCredentials
+Masking supported pattern matches of $KUBECONFIG_CONTENT
+[Pipeline] {
+[Pipeline] container
+[Pipeline] {
+[Pipeline] sh
++ mkdir /root/.kube
++ echo 'apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURBVENDQWVtZ0F3SUJBZ0lKQUpFc1cwejadNVllMTUEwR0NTcUdTSWIzRFFFQkN3VUFNQmN4RlRBVEJnTlYKQkFNTURERXdMakUxTWk0eE9ETXVNVEFlRncweU1ERXdNREl5TURVek1EVmFGdzB6TURBNU16QXlNRFV6TURWYQpNQmN4RlRBVEJnTlZCQU1NRERFd0xqRTFNaTR4T0RNdU1UQ0NBU0l3RFFZSktvWklodmNOQVFFQkJRQURnZ0VQCkFEQ0NBUW9DZ2dFQkFNK2ZFZjJxb2pnMVZYMDVjcExCSUpFRUxIZWNEZkxKMnB2dzh0amlPM1g4VFcvY0x6T0oKU0YxY3lWTURqdThlVWh6UXJYTG9OR0dUaHZsSUpZV1B5VFJkV2ZYM2ZUTnBvODdEUlE1UThmSmxXQk54alBBMApJQ2QyM1FTVTB2RFFtZmN0WVp6Q1JYMG5xV3BLNmVGNm1HVkptRkZMVXA5ZHhabWgrTmhwaGI1YUE0Q0tUZ0ZTCjYydVpKeHRNMXdGa1ZwZFJXejZGTXBCdCszcExCeEIxVjJ4K2hPQjFXTU52S2tGWHFWTk8xaTkvWXRib3R1ajEKK09VZUtmTDBxUWFlcE5nVlNHSUZZWnNuajN1cEdDVmlUbDNTODBWRE9JSStPZG1uSWYrK01aZDA3WHZjUFZBMQpiQXdBdDdnMmw0WUZWaW45RllHWDh3TENiNGR3ZnA4cmE5TUNBd0VBQWFOUU1FNHdIUVlEVlIwT0JCWUVGSldpCm9EQUxoUlQ1L2hzZFpmZktuWEpVYXRJcE1COEdBMVVkSXdRWU1CYUFGSldpb0RBTGhSVDUvaHNkWmZmS25YSlUKYXRJcE1Bd0dBMVVkRXdRRk1BTUJBZjh3RFFZSktvWklodmNOQVFFTEJRQURnZ0VCQUlwd2d2TEdWT2ozMms3dAo5NUFrNDlQMEhnOTVuYmdMTDgybVROMXJHYllhWVZTRVB2SkFvc0JNd2tqUUg5MEhxNDVpdHRSeVFxclRaZFhyCnFpZERZUnowTlIrK3J4TC9jalA0UGg1ZkhnK3c1cUJjbUJ5MndKV0paOFg4K3lOUEczVWJaT0VLaElyV3Y4OFQKV0pOV0xxbnZtUmdyNWV6MlZVQmV0N1pHOUZySEhFQ2luNW5McklYK1NuRHlpZkZlZU1UKzFXZkVnbFJNZTlwOQp3d0NMQWRSVFB5eG12cGJjQ2t4anlmRDRRa1oydVk2eVpTcGhCVjBFK053V01RN2dPWTkwRGZpK1RhN0NJeFNWCllabzFlWjcvdGlldVN4R09oQjdwWnBicm52OWFZcC94c1FDSEVMY3lTMHE1UG9NRmNzK1JtUVZDWStZVjU0bEUKYzdrZUIxRT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=
+    server: https://172.31.9.99:16443
+  name: microk8s-cluster
+contexts:
+- context:
+    cluster: microk8s-cluster
+    user: admin
+  name: microk8s
+current-context: microk8s
+kind: Config
+preferences: {}
+users:
+- name: admin
+  user:
+    token: dm53WloyTHFYbktKeFFLNkNKRWVVelpOZjQ1S01rUjFhMnZpMVRxYWx4UT0K'
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy)
+[Pipeline] withCredentials
+Masking supported pattern matches of $KUBECONFIG_CONTENT
+[Pipeline] {
+[Pipeline] container
+[Pipeline] {
+[Pipeline] sh
++ kubectl set image deployment/buildit-deployment 'buildit=yorgdockers/buildit:2'
+deployment.apps/buildit-deployment image updated
+[Pipeline] }
+[Pipeline] // container
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] }
+[Pipeline] // podTemplate
+[Pipeline] End of Pipeline
+Finished: SUCCESS
