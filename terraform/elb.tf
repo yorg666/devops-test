@@ -1,4 +1,10 @@
+variable "create-elb" {
+  type    = string
+  default = "true"
+}
+
 resource "aws_elb" "krystian-buildit" {
+  count            = var.create-elb == "true" ? 1 : 0
   name               = "krystian-buildit-terraform-elb"
   availability_zones = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
 
